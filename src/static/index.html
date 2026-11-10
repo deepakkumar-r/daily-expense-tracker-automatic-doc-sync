@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A private, local dashboard for your daily expenses.">
+  <title>Expense Tracker | Your spending, in focus</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to dashboard</a>
+  <aside class="sidebar" data-component="Navigation" data-doc="Brand, dashboard navigation and local-storage status.">
+    <a class="brand" href="/" aria-label="Expense Tracker home"><span class="brand-icon" aria-hidden="true">e.</span><span>expense<span class="brand-dot">.</span></span></a>
+    <p class="nav-label">WORKSPACE</p>
+    <a class="nav-item active" href="#main" aria-current="page"><span aria-hidden="true">&#9638;</span> Overview</a>
+    <a class="nav-item" href="#transactions"><span aria-hidden="true">&#8644;</span> Transactions</a>
+    <a class="nav-item" href="#insights"><span aria-hidden="true">&#9684;</span> Insights</a>
+    <div class="sidebar-bottom"><span class="status-dot"></span> Local &amp; private<p>Your data stays on this device.<br>No accounts. No cloud.</p></div>
+  </aside>
+
+  <main id="main">
+    <header class="topbar"><span class="breadcrumb">Workspace <span>/</span> Overview</span><span class="profile" aria-label="Personal workspace">P</span></header>
+    <div class="content">
+      <section class="page-heading">
+        <div><p class="eyebrow">YOUR MONEY, AT A GLANCE</p><h1>Spending overview</h1><p class="muted">A little clarity for your everyday spending.</p></div>
+        <button class="button primary" id="add-expense"><span aria-hidden="true">+</span> Add expense</button>
+      </section>
+
+      <div id="notice" role="status" aria-live="polite" hidden></div>
+      <section class="filter-bar" aria-label="Dashboard filters" data-component="Filters" data-doc="Month and category filters apply to transactions, summaries and charts together.">
+        <div class="filter-group"><label for="month-filter">Month</label><input id="month-filter" type="month" required></div>
+        <div class="filter-group"><label for="category-filter">Category</label><select id="category-filter"><option value="">All categories</option></select></div>
+        <button class="button subtle" id="reset-filters">Reset filters</button>
+        <span class="currency-note">Amounts in your chosen currency</span>
+      </section>
+
+      <section class="stats-grid" aria-label="Monthly summary" data-component="Monthly summary" data-doc="Exact total, transaction count, average expense and largest category for the selected filters.">
+        <article class="stat-card featured"><div class="stat-label">Total spent <span aria-hidden="true">&#8599;</span></div><strong id="total-spent">--</strong><p id="period-label">This month</p></article>
+        <article class="stat-card"><div class="stat-label">Transactions <span class="stat-icon" aria-hidden="true">&#8644;</span></div><strong id="transaction-count">--</strong><p>Expenses recorded</p></article>
+        <article class="stat-card"><div class="stat-label">Average expense <span class="stat-icon" aria-hidden="true">&#247;</span></div><strong id="average-expense">--</strong><p>Per transaction</p></article>
+        <article class="stat-card"><div class="stat-label">Top category <span class="stat-icon" aria-hidden="true">&#9684;</span></div><strong class="category-stat" id="top-category">--</strong><p id="top-category-amount">No spending yet</p></article>
+      </section>
+
+      <section class="charts-grid" id="insights" data-component="Spending charts" data-doc="Accessible daily spending bars and category breakdown with exact amount labels and empty states.">
+        <article class="panel trend-panel"><div class="panel-heading"><div><h2>Spending activity</h2><p class="muted">Your daily spending, in perspective</p></div><span class="legend"><i></i> Daily total</span></div>
+          <div id="daily-chart" class="daily-chart" role="list" aria-label="Daily spending"></div>
+        </article>
+        <article class="panel category-panel"><div class="panel-heading"><div><h2>By category</h2><p class="muted">Where your money goes</p></div></div><div id="category-chart" class="category-chart" role="list" aria-label="Spending by category"></div></article>
+      </section>
+
+      <section class="panel transactions-panel" id="transactions" data-component="Transactions" data-doc="Newest-first expense table with category tags, exact amounts, edit/delete actions and loading, error and empty states.">
+        <div class="panel-heading"><div><h2>Transactions <span id="table-count" class="count-badge">0</span></h2><p class="muted">The details behind your day-to-day</p></div><button id="refresh" class="button subtle">Refresh</button></div>
+        <div id="loading" role="status">Loading your expenses...</div>
+        <div class="table-scroll"><table><caption class="sr-only">Expenses for the selected month and category</caption><thead><tr><th scope="col">Description</th><th scope="col">Category</th><th scope="col">Date</th><th scope="col" class="numeric">Amount</th><th scope="col" class="numeric">Actions</th></tr></thead><tbody id="expense-rows"></tbody></table></div>
+        <div id="empty-state" class="empty-state" hidden><span class="empty-icon" aria-hidden="true">+</span><h3>A fresh start</h3><p>No expenses match these filters. Add an expense or try another month.</p><button id="empty-add" class="button primary">Add your first expense</button></div>
+        <footer class="table-footer"><span id="record-count">0 expenses</span><span>Stored securely in your local SQLite database</span></footer>
+      </section>
+      <footer class="page-footer"><span>Small steps. Smarter spending.</span><span>Expense Tracker &middot; Personal workspace</span></footer>
+    </div>
+  </main>
+
+  <dialog id="expense-dialog" aria-labelledby="form-title" data-component="Expense editor" data-doc="Accessible add/edit dialog validates amount, category, description and date, persists through the Python API and reports failures without losing entered values.">
+    <form id="expense-form">
+      <div class="dialog-heading"><div><p class="eyebrow">MAKE IT COUNT</p><h2 id="form-title">Add expense</h2></div><button type="button" class="icon-button" id="close-dialog" aria-label="Close expense editor">&times;</button></div>
+      <p class="muted">Keep track of the little things. They add up.</p>
+      <label for="amount">Amount</label><input id="amount" name="amount" type="text" inputmode="decimal" pattern="[0-9]+(\.[0-9]{1,2})?" placeholder="0.00" maxlength="12" required autocomplete="off">
+      <div class="form-grid"><div><label for="category">Category</label><input id="category" name="category" list="category-suggestions" maxlength="80" placeholder="e.g. Food" required><datalist id="category-suggestions"><option value="Food"><option value="Transport"><option value="Shopping"><option value="Bills"><option value="Health"><option value="Entertainment"><option value="Other"></datalist></div><div><label for="date">Date</label><input id="date" name="date" type="date" min="0001-01-01" max="9999-12-31" required></div></div>
+      <label for="description">Description</label><input id="description" name="description" maxlength="500" placeholder="What was it for?" required>
+      <p id="form-error" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions"><button type="button" class="button subtle" id="cancel-expense">Cancel</button><button type="submit" class="button primary" id="save-expense">Save expense</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="delete-dialog" aria-labelledby="delete-title" data-component="Delete confirmation" data-doc="Explicit confirmation before deleting an expense; failures stay visible and no optimistic data loss occurs.">
+    <h2 id="delete-title">Delete this expense?</h2><p id="delete-description" class="muted"></p><p>This cannot be undone.</p>
+    <p id="delete-error" class="form-error" role="alert" hidden></p>
+    <div class="dialog-actions"><button id="cancel-delete" class="button subtle">Keep expense</button><button id="confirm-delete" class="button danger">Delete expense</button></div>
+  </dialog>
+</body>
+</html>
