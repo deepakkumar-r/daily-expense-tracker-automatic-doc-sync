@@ -1,27 +1,36 @@
-# Eight-stage workflow
+# Eight-stage top-down workflow
 
 ```mermaid
 flowchart TD
-    H[Human: approve scope] --> O[Orchestrator]
+    H[Human approves one US-001] --> O[Orchestrator explains and routes work]
     O --> R[1 Requirements]
     R --> A[2 Architecture]
-    A --> D[3 Design Review]
+    A --> D[3 Design review]
     D --> G{Human design approval}
     G -->|Revise| A
     G -->|Approve| P[4 Planning]
     P --> I[5 Development]
-    I --> S[5 Documentation Sync]
-    S --> C[6 Code Review]
-    C -->|Blocking findings| I
+    I --> S[Documentation sync]
+    S --> C[6 Code review]
+    C -->|Blocking finding| I
     C --> T[7 Testing]
-    T -->|Failed| I
-    T -->|Passed| L{Human local commit approval}
-    L --> M[8 PR Management and PR draft]
-    M --> U{Separate human publication approval}
-    U -->|Remote available| PR[Update existing PR]
-    PR --> V{Human review and merge approval}
-    V --> DONE[Merge]
+    T -->|Failure| I
+    T --> L{Human local commit approval}
+    L -->|No| I
+    L -->|Yes| M[8 PR management]
+    M --> U{Human publication approval}
+    U -->|No| M
+    U -->|Yes| PR[Open or update PR]
+    PR --> V{Human merge approval}
+    V -->|Changes needed| C
+    V -->|Approve| DONE[Merge]
 ```
+
+This is a top-down, explainable workflow rather than a collection of
+autonomous agents. The Orchestrator is the coordinator, not the decision-maker:
+it reads the current artifact, sends a bounded task to the next specialist and
+records the handoff. Specialists do not skip gates, broaden US-001 or publish
+remotely on their own.
 
 | Stage | Execution / artifact | Gate |
 |---|---|---|

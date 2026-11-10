@@ -5,28 +5,70 @@ Python 3.11+ standard library: `ast`, `pathlib`, `hashlib`, `tempfile`, `os`,
 `dataclasses` and `unittest`. No runtime packages.
 
 ```mermaid
-flowchart LR
-    U[User CLI: add/view/update/delete/total] --> X[Expense validation and service]
-    B[Responsive HTML CSS JS dashboard] --> HTTP[Loopback Python JSON HTTP API]
-    HTTP --> X
-    X --> DB[(Local SQLite: integer cents)]
-    X --> OUT[Rows and exact totals]
-    H[Human approvals] --> O[Orchestrator]
-    O --> A[Nine specialists]
-    A --> S[Python HTML CSS JavaScript source]
-    S --> W[Polling watcher]
-    C[Copilot PostToolUse] --> E[Sync engine]
-    W --> E
-    E --> P[AST parsing - never execute source]
-    P --> R[Deterministic renderer and fingerprint]
-    E --> UI[Static HTML CSS JS inventory]
-    UI --> R
-    R --> L[Ownership checks and exclusive lock]
-    L --> D[Atomic docs/api.md]
-    L --> UD[Atomic docs/ui.md]
-    G[Pre-commit staged snapshot] --> R
-    G --> Q[Reject documentation drift]
+flowchart TD
+    U[User] --> C[CLI or local browser]
+    C --> A[Application adapter]
+    A --> S[ExpenseTracker service]
+    S --> V[Validate input and normalize values]
+    V --> D[(SQLite database<br/>integer cents)]
+    D --> R[Rows and exact totals]
+    R --> C
+
+    H[Approved source change] --> W[Documentation workflow]
+    W --> P[Parse source without executing it]
+    P --> G[Generate deterministic API and UI references]
+    G --> Q[Check ownership, lock and atomic writes]
+    Q --> O[docs/api.md and docs/ui.md]
 ```
+
+The runtime path is deliberately top-down: a user chooses an interface, the
+adapter calls one reusable service, the service validates data, and SQLite
+stores the result. The documentation path is separate: an approved source
+change is parsed, rendered and checked before generated references are replaced.
+This keeps application behavior and documentation automation explainable without
+requiring a hidden background service or agent runtime.
+
+## Explainable agentic workflow
+
+The agents do not independently invent scope or publish changes. The
+Orchestrator moves one human-approved US-001 through a fixed sequence. Each
+specialist has one job, produces a named artifact, and hands that artifact to
+the next stage. A human gate is required whenever scope, implementation,
+publication or merge authority changes.
+
+```mermaid
+flowchart TD
+    H[Human approves US-001 scope]
+    H --> O[Orchestrator]
+    O --> R[1. Requirements<br/>requirements.md]
+    R --> A[2. Architecture<br/>architecture.md]
+    A --> D[3. Design review<br/>design-review.md]
+    D --> HA{Human approves design?}
+    HA -->|No: revise| A
+    HA -->|Yes| P[4. Planning<br/>impl-plan.md]
+    P --> I[5. Development<br/>source and tests]
+    I --> S[Documentation sync<br/>api.md and ui.md]
+    S --> C[6. Code review<br/>code-review.md]
+    C -->|Blocking finding| I
+    C --> T[7. Testing<br/>test-report.md]
+    T -->|Failure| I
+    T --> HP{Human approves local commit?}
+    HP -->|No| I
+    HP -->|Yes| M[8. PR management<br/>CHANGELOG.md and PR description]
+    M --> HU{Human approves publication?}
+    HU -->|No| M
+    HU -->|Yes| PR[Open or update PR]
+    PR --> HM{Human reviews and approves merge?}
+    HM -->|No| C
+    HM -->|Yes| DONE[Merge]
+```
+
+At every handoff the Orchestrator can answer four questions: what was approved,
+which agent acted, which artifact was produced, and what gate is next. A failed
+review or test returns the work to Development; it does not silently advance.
+Documentation Sync is a deterministic tool step inside Development, not an
+autonomous decision-maker. PR Management can prepare or update a PR only after
+the separate human publication approval.
 
 ## Components and contracts
 | Component | Responsibility |
