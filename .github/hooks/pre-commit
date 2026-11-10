@@ -1,0 +1,2 @@
+#!/bin/sh
+exec python src/git_gate.py

@@ -1,0 +1,22 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "python src/copilot_hook.py pre",
+        "windows": "python src\\copilot_hook.py pre",
+        "cwd": ".",
+        "timeout": 15
+      }
+    ],
+    "PostToolUse": [
+      {
+        "type": "command",
+        "command": "python src/copilot_hook.py post",
+        "windows": "python src\\copilot_hook.py post",
+        "cwd": ".",
+        "timeout": 15
+      }
+    ]
+  }
+}
