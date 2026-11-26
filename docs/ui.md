@@ -41,7 +41,7 @@ Source fingerprint: `dd7f8567a1e87b2af1601de27d82d758b5230174a2f144ab66a40a125ed
 <pre>Open a prefilled edit form or a new expense form with today&#x27;s local date.</pre>
 <pre>Close the editor only when no mutation is in progress.</pre>
 <pre>Persist validated form fields and keep errors/entered values visible on failure.</pre>
-<pre>Ask for confirmation before removing a record from SQLite.</pre>
+<pre>Ask for confirmation before removing a record from local JSON storage.</pre>
 <pre>Delete only after explicit confirmation and retain the dialog on failure.</pre>
 
 ## <code>src/static/index.html</code>
@@ -76,7 +76,7 @@ Source fingerprint: `dd7f8567a1e87b2af1601de27d82d758b5230174a2f144ab66a40a125ed
 #### <code>Transactions</code>
 <pre>Newest-first expense table with category tags, exact amounts, edit/delete actions and loading, error and empty states.</pre>
 #### <code>Expense editor</code>
-<pre>Accessible add/edit dialog validates amount, category, description and date, persists through the Python API and reports failures without losing entered values.</pre>
+<pre>Accessible add/edit dialog validates amount, category, description and date, persists through the Java API and reports failures without losing entered values.</pre>
 #### <code>Delete confirmation</code>
 <pre>Explicit confirmation before deleting an expense; failures stay visible and no optimistic data loss occurs.</pre>
 

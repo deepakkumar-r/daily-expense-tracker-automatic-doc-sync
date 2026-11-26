@@ -38,7 +38,7 @@ remotely on their own.
 | 2 Architecture | Components, data flow, technology and Mermaid in architecture.md | Requirements resolved |
 | 3 Design Review | Risks and decisions in design-review.md | Human implementation approval |
 | 4 Planning | Dependency tasks in impl-plan.md | No unresolved design blockers |
-| 5 Implementation | Development changes; Documentation Sync runs sync/check | Approved scope only |
+| 5 Implementation | Development changes; local hook detects affected files and Documentation Sync asks Yes/No before sync/check | Approved scope only |
 | 6 Review | Seven review areas in code-review.md | Blocking findings resolved |
 | 7 Verify | Unit/integration tests plus generated-content checks in test-report.md | No failures; skips disclosed |
 | 8 PR | CHANGELOG.md and pr-description.md; approved commits/publication | Separate commit, push/PR and merge permissions |
@@ -49,14 +49,13 @@ support. Select **Orchestrator** or run `/start-sdlc`. If newly created agents a
 visible, reload the VS Code window. Use `/sync-docs` and `/verify` for bounded reruns.
 The host must expose the configured tool aliases and custom-agent delegation.
 
-VS Code loads `.github/hooks/docsync.json` where hooks are supported/enabled.
-PreToolUse asks for every non-read operation. After approved tools, PostToolUse runs
-the deterministic generator. These hooks are not a portable Copilot CLI hook schema;
-use the watcher and Git gate independently on hosts without this contract.
-
-For changes made outside Copilot, run `python src/docsync.py watch` from a terminal.
-The initial snapshot is synchronized immediately. Each polling pass detects source
-changes and output drift; failures are surfaced and the watcher recovers after repair.
+VS Code loads `.github/hooks/docsync.json` where supported. `SessionStart`
+announces the active human gates, `PreToolUse` asks before mutations or command
+execution, and `PostToolUse` reports changed files and the documentation
+approval gate. `UserPromptSubmit` repeats the local change reminder. The
+Documentation Sync agent asks the Yes/No form and edits only after Yes. GitHub
+Actions performs supplemental validation and manifest publication; it is not
+required locally.
 
 ## State, handoffs and approvals
 The coordinator uses existing artifacts, test evidence and chat approvals as state.
@@ -66,12 +65,11 @@ the human. A denied approval stops progression. Never mark a skipped stage compl
 Do not treat a tool's approval dialog as approval to push/merge unrelated work.
 
 ## Delivery status
-The subsequent human request extends this same US-001 with a responsive local
-HTML/CSS/JavaScript website, a loopback Python JSON adapter reusing the existing
-expense service/SQLite schema, and generated UI documentation alongside the API.
-The watcher, hook and staged gate cover all four source types. See the current
-test-report section for executed regression evidence and unverified browser checks.
-This extension remains local; no new commit/publication or merge is claimed.
+The current migration preserves the responsive HTML/CSS/JavaScript website and
+local JSON runtime data while removing the Python application and documentation
+engines. The Java server remains the dependency-free application adapter.
+The local hooks and Copilot agents now own documentation change detection and
+targeted synchronisation. GitHub Actions remains a validation/manifest fallback.
 
 Prior CLI migration/publication history:
 Current application: Daily Expense Tracker, the only US-001. The human approved

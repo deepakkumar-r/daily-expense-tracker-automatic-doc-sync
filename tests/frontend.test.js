@@ -78,7 +78,7 @@ async function setup() {
     run: (script) => vm.runInContext(script, context) };
 }
 
-test("initial dashboard uses Python API, text-only rendering and precision-safe IDs", async () => {
+test("initial dashboard uses the Java API, text-only rendering and precision-safe IDs", async () => {
   const app = await setup();
   assert.match(app.calls[0][0], /^\/api\/expenses\?month=/);
   assert.equal(app.nodes["total-spent"].textContent, "12.50");

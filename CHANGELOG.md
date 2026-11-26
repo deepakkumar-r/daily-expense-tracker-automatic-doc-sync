@@ -1,6 +1,11 @@
 # Changelog
 
 ## Unreleased
+- Replace Python/Java documentation automation with Copilot custom-agent,
+  instruction, skill, hook and GitHub Actions based synchronisation. Added,
+  modified and deleted functionality is mapped to only affected documents.
+- Remove Python application, automation, tests and bytecode; preserve the
+  SQLite data, responsive frontend, ten agents, eight stages and Markdown docs.
 - Add a professional responsive plain HTML/CSS/JavaScript expense dashboard with
   CRUD dialogs, category/month filters, exact summaries and accessible charts.
 - Add a loopback-only standard-library Python JSON API using the existing

@@ -4,14 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A private, local dashboard for your daily expenses.">
-  <title>Expense Tracker | Your spending, in focus</title>
+  <title>Expense Tracker | EPAM Theme</title>
+  <meta name="theme-color" content="#303240">
   <link rel="stylesheet" href="/styles.css">
   <script src="/app.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to dashboard</a>
   <aside class="sidebar" data-component="Navigation" data-doc="Brand, dashboard navigation and local-storage status.">
-    <a class="brand" href="/" aria-label="Expense Tracker home"><span class="brand-icon" aria-hidden="true">e.</span><span>expense<span class="brand-dot">.</span></span></a>
+    <a class="brand" href="/" aria-label="Expense Tracker home"><span class="brand-icon" aria-hidden="true">&lt;</span><span>epam<span class="brand-dot">&gt;</span></span></a>
     <p class="nav-label">WORKSPACE</p>
     <a class="nav-item active" href="#main" aria-current="page"><span aria-hidden="true">&#9638;</span> Overview</a>
     <a class="nav-item" href="#transactions"><span aria-hidden="true">&#8644;</span> Transactions</a>
@@ -54,13 +55,13 @@
         <div id="loading" role="status">Loading your expenses...</div>
         <div class="table-scroll"><table><caption class="sr-only">Expenses for the selected month and category</caption><thead><tr><th scope="col">Description</th><th scope="col">Category</th><th scope="col">Date</th><th scope="col" class="numeric">Amount</th><th scope="col" class="numeric">Actions</th></tr></thead><tbody id="expense-rows"></tbody></table></div>
         <div id="empty-state" class="empty-state" hidden><span class="empty-icon" aria-hidden="true">+</span><h3>A fresh start</h3><p>No expenses match these filters. Add an expense or try another month.</p><button id="empty-add" class="button primary">Add your first expense</button></div>
-        <footer class="table-footer"><span id="record-count">0 expenses</span><span>Stored securely in your local SQLite database</span></footer>
+        <footer class="table-footer"><span id="record-count">0 expenses</span><span>Stored locally on this device</span></footer>
       </section>
       <footer class="page-footer"><span>Small steps. Smarter spending.</span><span>Expense Tracker &middot; Personal workspace</span></footer>
     </div>
   </main>
 
-  <dialog id="expense-dialog" aria-labelledby="form-title" data-component="Expense editor" data-doc="Accessible add/edit dialog validates amount, category, description and date, persists through the Python API and reports failures without losing entered values.">
+  <dialog id="expense-dialog" aria-labelledby="form-title" data-component="Expense editor" data-doc="Accessible add/edit dialog validates amount, category, description and date, persists through the Java API and reports failures without losing entered values.">
     <form id="expense-form">
       <div class="dialog-heading"><div><p class="eyebrow">MAKE IT COUNT</p><h2 id="form-title">Add expense</h2></div><button type="button" class="icon-button" id="close-dialog" aria-label="Close expense editor">&times;</button></div>
       <p class="muted">Keep track of the little things. They add up.</p>

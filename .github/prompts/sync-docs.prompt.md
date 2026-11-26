@@ -1,6 +1,10 @@
 ---
 name: sync-docs
-description: "Synchronize and check the generated API reference after source changes."
+description: "Synchronize local affected documentation after source changes with a human Yes/No gate."
 agent: Documentation Sync
 ---
-Use the documentation-sync skill. Report changed/unchanged and the exact check result.
+Use the Documentation Sync agent and the current local diff. Before editing,
+ask the human through a Yes/No approval form whether the corresponding
+documentation should be updated. On No, do not edit docs. On Yes, update only
+documentation affected by added, modified, or deleted functionality. Preserve
+unrelated Markdown and report evidence, risks, and the next approval gate.

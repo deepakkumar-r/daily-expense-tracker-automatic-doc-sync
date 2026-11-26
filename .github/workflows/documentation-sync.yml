@@ -1,0 +1,104 @@
+name: Documentation synchronisation
+
+on:
+  pull_request:
+  push:
+    branches: [main, "capstone/**"]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  detect-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed functionality
+        id: changes
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            base="${{ github.event.pull_request.base.sha }}"
+          else
+            base="${{ github.event.before }}"
+          fi
+          if [[ "$base" == "0000000000000000000000000000000000000000" ]]; then
+            base="$(git rev-list --max-parents=0 HEAD)"
+          fi
+          git diff --name-status "$base" "$GITHUB_SHA" > changed-files.txt
+          {
+            echo "## Changed files"
+            echo
+            if [[ -s changed-files.txt ]]; then
+              echo '```'
+              cat changed-files.txt
+              echo '```'
+            else
+              echo "No file changes detected."
+            fi
+          } > changed-files.md
+
+      - name: Validate agent documentation workflow
+        shell: bash
+        run: |
+          test -f .github/agents/documentation-sync.agent.md
+          test -f .github/skills/sync-docs/SKILL.md
+          test -f .github/prompts/sync-docs.prompt.md
+          test -f .github/instructions/documentation.instructions.md
+          test -f docs/api.md
+          test -f docs/architecture.md
+          test -f docs/ui.md
+          test -f README.md
+          test -f CHANGELOG.md
+          if find . -type f \( -name '*.py' -o -name '*.pyc' \) -not -path './.git/*' | grep -q .; then
+            echo "Unsupported Python or bytecode files remain." >&2
+            exit 1
+          fi
+
+      - name: Validate frontend
+        shell: bash
+        run: |
+          if command -v node >/dev/null 2>&1 && [[ -f tests/frontend.test.js ]]; then
+            node --test tests/frontend.test.js
+          else
+            echo "Node.js frontend test skipped because the optional runtime is unavailable."
+          fi
+
+      - name: Publish change manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-change-manifest
+          path: |
+            changed-files.txt
+            changed-files.md
+
+      - name: Request targeted Copilot documentation sync
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = [
+              'Documentation sync required for this change.',
+              '',
+              'Use the `Documentation Sync` custom agent or `/sync-docs` prompt.',
+              'Read `changed-files.md` from the workflow artifact and update only the',
+              'affected API, architecture, UI, README, test-plan, or changelog documents.',
+              'Human requirements and design approvals remain required.'
+            ].join('\n');
+            const comments = await github.paginate(
+              github.rest.issues.listComments,
+              { owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number }
+            );
+            if (!comments.some(comment => comment.body === body)) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body
+              });
+            }

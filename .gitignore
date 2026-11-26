@@ -6,3 +6,5 @@ docs/.api-*.tmp
 *.sqlite3-journal
 *.sqlite3-wal
 *.sqlite3-shm
+expenses-java.json
+.build/

@@ -1,17 +1,20 @@
 # PR description - published as PR #1
 
+> Historical publication artifact. The current migration removes the Python
+> application/documentation engine and uses the dependency-free Java adapter,
+> GitHub Actions plus
+> Copilot agents for documentation synchronisation.
+
 [Pull request](https://github.com/deepakkumar-r/automated-documentation-sync/pull/1):
 `capstone/us-001` into `main`. Existing PR is reused for this migration.
 Awaiting human review; not merged.
 
 ## Summary
 Replace the documentation-only sample with Daily Expense Tracker, the only US-001.
-Provide persistent Python/SQLite CLI expense CRUD, category filtering and exact
-integer-cent totals. Preserve the deterministic documentation-sync engine,
-ten-agent human-gated SDLC pipeline, automation hooks and Git workflows.
-Extend the same story with a responsive local HTML/CSS/JavaScript dashboard,
-Python JSON HTTP adapter and separate generated frontend documentation.
-These website changes are local; no new publication is claimed.
+Preserve local expense data, responsive HTML/CSS/JavaScript dashboard, ten-agent
+human-gated SDLC pipeline, supported Copilot integrations and Markdown docs.
+Use GitHub Actions to detect added, modified and deleted functionality and
+the Documentation Sync agent to update only affected documentation.
 
 ## Changes Made
 - `.github/copilot-instructions.md`: shared scope, trust and verification rules.
@@ -25,7 +28,6 @@ These website changes are local; no new publication is claimed.
 - `.github/agents/code-review.agent.md`: read-only review.
 - `.github/agents/testing.agent.md`: executable evidence.
 - `.github/agents/pr-management.agent.md`: approved local/remote delivery.
-- `.github/instructions/python.instructions.md`: implementation invariants.
 - `.github/instructions/documentation.instructions.md`: doc ownership/evidence.
 - `.github/skills/documentation-sync/SKILL.md`: reusable sync procedure.
 - `.github/skills/verification/SKILL.md`: reusable test procedure.
@@ -36,18 +38,12 @@ These website changes are local; no new publication is claimed.
 - `.github/prompts/sync-docs.prompt.md`: focused sync trigger.
 - `.github/prompts/verify.prompt.md`: focused verification trigger.
 - `.github/hooks/docsync.json`: VS Code lifecycle wiring.
-- `.github/hooks/pre-commit`: staged-source/doc gate.
+- `.github/workflows/documentation-sync.yml`: change detection and validation.
 - `.gitignore`: omit transient locks, caches and temporary output.
 - `.gitattributes`: consistent line endings and portable hook script.
-- `src/docsync.py`: AST engine, atomic sync, check and watcher.
-- `src/expenses.py`: persistent expense CLI/service, validated CRUD, category filters and exact totals.
-- `src/web.py`: loopback HTTP API/static server reusing the existing service and SQLite database.
 - `src/static/index.html`: accessible dashboard, filters, charts, expense editor and delete confirmation.
 - `src/static/styles.css`: responsive professional dashboard layout and components.
 - `src/static/app.js`: vanilla JavaScript CRUD, exact summaries, charts and explicit error states.
-- `src/ui_docs.py`: non-executing frontend structure and functionality documentation renderer.
-- `src/copilot_hook.py`: permissions and automatic post-tool synchronization.
-- `src/git_gate.py`: isolated staged-index validation.
 - `tests/test_docsync.py`: engine, safety, CLI and live watcher tests.
 - `tests/test_automation.py`: hook/index contracts and optional real Git integration.
 - `tests/test_customizations.py`: agent, workflow and output-quality contracts.
@@ -65,7 +61,6 @@ These website changes are local; no new publication is claimed.
 - `docs/guardrails.md`: approvals, trust and failure boundaries.
 - `docs/code-review.md`: seven-area review and resolved findings.
 - `docs/test-report.md`: real evidence and disclosed limitations.
-- `docs/reviewer-showcase-guide.md`: end-to-end speaking script, isolated demonstration and bounded agent prompts.
 - `docs/pr-description.md`: required PR sections and complete change manifest.
 - `docs/api.md`: generated source-of-truth reference.
 - `docs/ui.md`: generated frontend pages, components, functions, styles and functionality reference.
@@ -76,9 +71,8 @@ The supplied `EPAM_Capstone_proj_breif.md` remains unchanged.
 
 ## Test Evidence
 See [test-report.md](test-report.md) for commands, output and skip reasons.
-Run `python -m unittest discover -s tests -v` and `python src/docsync.py check`.
-Website extension: 81 tests in 16.606s, 80 passed and one Windows symlink-privilege
-skip, zero failures/errors; ten JavaScript controller checks also pass.
+Run `node --test tests/frontend.test.js` when Node.js is available.
+Current validation: ten JavaScript controller tests pass.
 Both references pass sync/check with unchanged second synchronization.
 Real browser visual checks were not executed because browser-tool discovery
 was denied by the approval hook. No remote PR update is claimed for this extension.
@@ -95,7 +89,8 @@ Historical infrastructure evidence is retained separately in the test report.
 `Not Found` explicitly identifies missing docstrings or modules without public APIs.
 Dynamic/inherited APIs and annotation rendering are outside scope.
 Expense Tracker is local and single-currency, without authentication, public hosting,
-budgets or cloud synchronization. SQLite files must be backed up by the user.
+budgets or cloud synchronization. The ignored JSON runtime file must be backed up
+by the user when desired.
 The website's standard-library server is loopback-only and not for production.
 UI docs provide a conservative static inventory, not full CSS/JS grammar validation.
 Real Git and OS symlink integration depend on local tooling/permissions; see test report.

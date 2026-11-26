@@ -36,7 +36,7 @@ function notify(message, error = false) {
   $("notice").setAttribute("role", error ? "alert" : "status");
 }
 
-/** @ui Call same-origin Python JSON endpoints and reject non-success responses. */
+/** @ui Call same-origin Java JSON endpoints and reject non-success responses. */
 async function api(path, method = "GET", data = null) {
   const options = { method, headers: { "X-Expense-Request": "1" } };
   if (data !== null) {

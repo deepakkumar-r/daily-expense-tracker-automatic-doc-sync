@@ -1,5 +1,23 @@
 # Test report
 
+## Current agents-only migration
+
+The former Python application, documentation engine, hooks, tests and bytecode
+were removed. The current application is the dependency-free Java server with
+atomic JSON persistence. The current workflow is validated by GitHub Actions
+configuration checks and the optional Node.js frontend test. Earlier Python
+command output below is historical evidence only and is not evidence for the
+current tree.
+
+Hook contract evidence: `SessionStart` emitted the agentic-SDLC context,
+`PreToolUse` allowed a read operation and requested approval for a mutation, and
+`PostToolUse` emitted the changed-file summary. The local frontend regression
+command `node --test tests\frontend.test.js` passed all 10 tests. Java backend evidence: `javac --add-modules jdk.httpserver -d .build
+src\web.java` compiled successfully; `GET /` returned 200; `GET /api/expenses`
+returned 200; and a POST expense returned 201 and was visible in a subsequent
+GET. The Java adapter persists JSON locally rather than using SQLite by the
+approved Option B choice; no SQLite JDBC driver is required.
+
 ## New-repository publication verification - 2026-11-10
 The human approved publishing the current workspace, including website/UI changes,
 to a new public repository with a feature-branch PR and no merge.
@@ -403,7 +421,7 @@ OK
 
 ## Reviewer guide verification - 2026-11-09
 
-Added [the reviewer showcase guide](reviewer-showcase-guide.md), linked it from
+The obsolete reviewer showcase guide was removed because it referenced deleted
 the README and updated the local PR description's required complete file manifest.
 Existing report history and uncommitted work were preserved. No source, generated
 API, agent configuration, hook, remote PR or approval state was changed by this work.

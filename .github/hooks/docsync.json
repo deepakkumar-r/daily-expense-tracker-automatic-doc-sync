@@ -1,10 +1,19 @@
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File .github/hooks/session-start.ps1",
+        "windows": "powershell -NoProfile -ExecutionPolicy Bypass -File .github\\hooks\\session-start.ps1",
+        "cwd": ".",
+        "timeout": 10
+      }
+    ],
     "PreToolUse": [
       {
         "type": "command",
-        "command": "python src/copilot_hook.py pre",
-        "windows": "python src\\copilot_hook.py pre",
+        "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File .github/hooks/pre-tool-use.ps1",
+        "windows": "powershell -NoProfile -ExecutionPolicy Bypass -File .github\\hooks\\pre-tool-use.ps1",
         "cwd": ".",
         "timeout": 15
       }
@@ -12,8 +21,17 @@
     "PostToolUse": [
       {
         "type": "command",
-        "command": "python src/copilot_hook.py post",
-        "windows": "python src\\copilot_hook.py post",
+        "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File .github/hooks/post-tool-use.ps1",
+        "windows": "powershell -NoProfile -ExecutionPolicy Bypass -File .github\\hooks\\post-tool-use.ps1",
+        "cwd": ".",
+        "timeout": 15
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File .github/hooks/post-tool-use.ps1",
+        "windows": "powershell -NoProfile -ExecutionPolicy Bypass -File .github\\hooks\\post-tool-use.ps1",
         "cwd": ".",
         "timeout": 15
       }
