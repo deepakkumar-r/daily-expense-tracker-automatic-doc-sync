@@ -9,12 +9,14 @@
 `capstone/us-001` into `main`. Existing PR is reused for this migration.
 Awaiting human review; not merged.
 
-## Summary
-Replace the documentation-only sample with Daily Expense Tracker, the only US-001.
-Preserve local expense data, responsive HTML/CSS/JavaScript dashboard, ten-agent
-human-gated SDLC pipeline, supported Copilot integrations and Markdown docs.
-Use GitHub Actions to detect added, modified and deleted functionality and
-the Documentation Sync agent to update only affected documentation.
+## AI generated PR summary
+Build Daily Expense Tracker as the sole US-001, with locally persisted expense data
+and a responsive HTML/CSS/JavaScript dashboard for CRUD, filtering and totals.
+Preserve the ten-agent, eight-stage human-gated SDLC, supported Copilot integrations,
+Git workflows and targeted local documentation synchronization. This migration
+removes the former Python application/documentation engine and uses a dependency-free
+Java adapter, with GitHub Actions providing supplemental validation and change-manifest
+publication.
 
 ## Changes Made
 - `.github/copilot-instructions.md`: shared scope, trust and verification rules.
